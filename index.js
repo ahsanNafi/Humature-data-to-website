@@ -9,16 +9,15 @@ const DHT_TYPE = 11; // DHT11
 const DHT_PIN = 17;
 
 app.use(express.static("public"))
+app.use(cors())
 
 app.get("/", async(req, res) => {
     try {
         const data = await readDHT11()
-        console.log(data)
         res.render('index.ejs', data)
     } catch (error) {
         console.log(error)
     }
-
 })
 
 app.get("/sensor-data", async (req, res) => {
@@ -42,14 +41,11 @@ app.listen(_PORT, () => {
 })
 
 const readDHT11 = () => {
-    console.log("pointer is here")
     return new Promise((resolve, reject) => {
         sensor.read(DHT_TYPE, DHT_PIN, (err, temperature, humidity) => {
             if (err) {
-                console.log(err);
                 reject(err);
             } else {
-                console.log(temperature, humidity)
                 resolve({ temperature, humidity });
             }
         });
